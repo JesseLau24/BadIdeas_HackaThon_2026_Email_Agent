@@ -63,11 +63,16 @@ Main package containing the core logic.
 
 ## ⚙️ How It Works
 
-1. User runs the CLI (on VS Code just run "cli_agent.py" file under root dir, or if you prefer to see a Terminal, then I guess you know what to do)
+On VS Code, just run "cli_agent.py" file under root dir, then talk to the local deployed LLM. 
+
+Or if you prefer to use PowerShel/CMD Terminal, then I guess you know what to do.
+
+1. User runs the CLI, state the task (e.g. What are my tasks?).
 2. Agent fetches recent emails
 3. LLM extracts tasks from email content
 4. Tasks are deduplicated and saved
-5. AI summarizes current workload and highlights urgency
+5. LLM summarizes current workload and highlights urgency
+6. If you want to see the task list and brutal deadline management, then, you look down because in the original ReadMe file there are ways to use these functions. 
 
 ---
 
