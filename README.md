@@ -82,7 +82,7 @@ One of our teammates is currently exploring the possibility of using **cloud-bas
 
 However:
 
-* We have **very limited experience with API-based models**
+* We have **very limited experience with Cloud Based models**
 * Also… budget constraints exist (instant noodles are already expensive enough)
 
 Due to time limitations, we were **unable to integrate the cloud-based version into this repository**.
