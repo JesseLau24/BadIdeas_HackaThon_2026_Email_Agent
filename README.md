@@ -13,7 +13,7 @@ All without relying on expensive cloud APIs (because… well… we’re broke st
 
 Therefore, you must have Ollama installed on your local device and download Phi4:14B model.
 
-(if you want to change models, go to cli_agent\ai_utils.py)
+(if you want to change models, go to "cli_agent\ai_utils.py")
 
 ---
 
@@ -118,7 +118,9 @@ And most importantly:
 Thanks for checking it out ❤️
  
  
- 
+ =========
+ Here is the original ReadMe:
+ =========
  
  # 🚀 How to Run LazyBomb Locally
 
