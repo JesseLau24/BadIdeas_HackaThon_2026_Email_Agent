@@ -9,6 +9,7 @@ import os
 from datetime import datetime, timezone
 from task_storage.task_writer import append_tasks
 from task_storage.task_parser import extract_task_list_from_output
+import re
 
 # ======================
 # ⚙️ 配置区
@@ -82,7 +83,6 @@ def fetch_recent_emails(last_processed_timestamp: str = None, limit=5):
 
     return mails
 
-
 # ======================
 # 😈 读取 strike
 # ======================
@@ -106,8 +106,8 @@ def call_ollama(prompt):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            encoding="utf-8",   # 解决 UnicodeDecodeError
-            errors="replace"    # 遇到无法解码字符替换掉
+            encoding="utf-8",
+            errors="replace"
         )
         if result.stderr.strip():
             print("🔹 Ollama stderr:", result.stderr.strip())
@@ -120,7 +120,7 @@ def call_ollama(prompt):
         return ""
 
 # ======================
-# 🤖 从邮件抽取任务
+# 从邮件抽取任务
 # ======================
 def extract_tasks_from_email(email_body: str):
     prompt = f"""
@@ -142,7 +142,7 @@ Each task must have the following fields (fill with available info; empty string
   }}
 ]
 
-Only output valid JSON list. Do not include any extra text or explanation.
+If the assigner is not mentioned explicitly in the email, leave it empty. Only output valid JSON list. Do not include extra text.
 """
     output_text = call_ollama(prompt)
     if not output_text:
@@ -155,7 +155,20 @@ Only output valid JSON list. Do not include any extra text or explanation.
     return tasks
 
 # ======================
-# 💬 CLI 对话
+# 解析邮件地址中的姓名
+# ======================
+def extract_name_from_email(email_addr: str) -> str:
+    if not email_addr:
+        return ""
+    # 从 "Jesse Huang <jesse@example.com>" 提取姓名
+    match = re.match(r'(.*)<.*>', email_addr)
+    if match:
+        name = match.group(1).strip()
+        return name
+    return email_addr.split('@')[0]
+
+# ======================
+# 💬 CLI 主函数
 # ======================
 def main():
     print("🤖 LazyBomb Agent CLI (Ollama + IMAP)")
@@ -164,11 +177,11 @@ def main():
     # 读取 last_processed.json
     last_processed_timestamp = None
     if os.path.exists(LAST_PROCESSED_JSON_PATH):
-        with open(LAST_PROCESSED_JSON_PATH, "r", encoding="utf-8") as f:
-            try:
+        try:
+            with open(LAST_PROCESSED_JSON_PATH, "r", encoding="utf-8") as f:
                 last_processed_timestamp = json.load(f).get("last_processed")
-            except:
-                last_processed_timestamp = None
+        except:
+            last_processed_timestamp = None
     print(f"📅 Last processed timestamp: {last_processed_timestamp}")
 
     while True:
@@ -181,46 +194,69 @@ def main():
         emails = fetch_recent_emails(last_processed_timestamp)
         print(f"📅 Found {len(emails)} new emails. Extracting tasks...")
 
+        # 读取现有任务
+        all_tasks = []
+        if os.path.exists(TASKS_PATH):
+            try:
+                with open(TASKS_PATH, "r", encoding="utf-8") as f:
+                    all_tasks = json.load(f)
+            except:
+                all_tasks = []
+
         new_tasks_count = 0
         for email_data in emails:
             tasks = extract_tasks_from_email(email_data["body"])
             for task in tasks:
-                # 添加邮件内容、source、id、status
+                # 补充 assigner，如果为空则用邮件发件人
+                if not task.get("assigner"):
+                    task["assigner"] = extract_name_from_email(email_data["from"])
                 task["email_content"] = email_data["body"]
                 task["source"] = "email"
                 task["status"] = task.get("status", "to do")
-                task["id"] = task.get("id", str(os.urandom(16).hex()))
+                task["id"] = task.get("id") or str(os.urandom(16).hex())
 
-            if tasks:
-                append_tasks(tasks, TASKS_PATH)
-                new_tasks_count += len(tasks)
+                # 去重：用 deadline + assigner 判定
+                duplicate = any(
+                    t.get("deadline") == task.get("deadline") and
+                    t.get("assigner") == task.get("assigner")
+                    for t in all_tasks
+                )
+                if duplicate:
+                    continue
 
-        if new_tasks_count == 0:
-            print("📭 No new tasks to add.")
-        else:
+                all_tasks.append(task)
+                new_tasks_count += 1
+
+        # 保存任务
+        if new_tasks_count > 0:
+            append_tasks(all_tasks, TASKS_PATH)
             print(f"✅ Added {new_tasks_count} new task(s) to {TASKS_PATH}")
 
-        # 更新 last_processed.json
-        if emails:
-            latest_timestamp = emails[-1]["timestamp"]
-            with open(LAST_PROCESSED_JSON_PATH, "w", encoding="utf-8") as f:
-                json.dump({"last_processed": latest_timestamp}, f, indent=2)
-            print(f"✅ Updated last processed timestamp to {latest_timestamp}")
-            last_processed_timestamp = latest_timestamp
+            # 更新 last_processed.json
+            if emails:
+                latest_timestamp = emails[-1]["timestamp"]
+                try:
+                    with open(LAST_PROCESSED_JSON_PATH, "w", encoding="utf-8") as f:
+                        json.dump({"last_processed": latest_timestamp}, f, indent=2)
+                    last_processed_timestamp = latest_timestamp
+                    print(f"✅ Updated last processed timestamp to {latest_timestamp}")
+                except Exception as e:
+                    print(f"❌ Failed to update last_processed.json: {e}")
+        else:
+            if emails:
+                print("📭 No new tasks to add. (All tasks are duplicates and skipped)")
+            else:
+                print("📭 No new tasks to add.")
 
-        print("😈 Loading strikes...")
-        strikes = load_strikes()
-
-        print("🧠 Thinking...\n")
-        # 这里可以直接用 Ollama 做总结
+        # AI 总结任务
         prompt = f"""
 You are an AI productivity assistant.
 
 User asked:
 {user_input}
 
-Here is email data:
-{json.dumps(emails, indent=2)}
+Here is current task data:
+{json.dumps(all_tasks, indent=2)}
 
 Please summarize tasks and highlight urgent/overdue ones.
 """
