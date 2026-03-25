@@ -1,3 +1,125 @@
+# 🤖 LazyBomb CLI Agent (for BadIdeas Hackathon 2026)
+
+Welcome to the slightly chaotic, mildly rebellious, and surprisingly effective **LazyBomb CLI Agent** 🚀
+
+This tool is a command-line based productivity assistant that:
+
+* 📬 Fetches emails via IMAP
+* 🧠 Uses a local LLM (via Ollama) to extract actionable tasks
+* 📝 Stores and deduplicates tasks
+* ⚡ Summarizes and highlights urgent work
+
+All without relying on expensive cloud APIs (because… well… we’re broke students 😅)
+
+Therefore, you must have Ollama installed on your local device and download Phi4:14B model.
+
+(if you want to change models, go to cli_agent\ai_utils.py)
+
+---
+
+## 🧩 Project Structure
+
+The CLI Agent is organized into a modular package for clarity and maintainability:
+
+### `cli_agent/`
+
+Main package containing the core logic.
+
+* **`core.py`**
+
+  * The main CLI loop
+  * Orchestrates everything: email fetching → task extraction → storage → AI summary
+
+* **`email_utils.py`**
+
+  * Handles IMAP connection and email fetching
+  * Extracts subject, sender, body, and timestamps
+  * Filters emails based on `last_processed.json`
+
+* **`ai_utils.py`**
+
+  * Communicates with the local LLM (Ollama)
+  * Converts raw email text into structured JSON tasks
+  * Includes a small but critical fallback to stabilize missing fields (because LLMs have… personality)
+
+---
+
+### External Modules
+
+* **`task_storage/`**
+
+  * `task_writer.py`: Appends tasks into `data/tasks.json`
+  * `task_parser.py`: Safely parses LLM output into structured JSON
+
+---
+
+### Data Files
+
+* `data/tasks.json` → Stores all extracted tasks
+* `data/last_processed.json` → Tracks last processed email timestamp
+* `data/strikes.json` → (Optional) Punishment/discipline system 😈
+
+---
+
+## ⚙️ How It Works
+
+1. User runs the CLI
+2. Agent fetches recent emails
+3. LLM extracts tasks from email content
+4. Tasks are deduplicated and saved
+5. AI summarizes current workload and highlights urgency
+
+---
+
+## ☁️ About Cloud Models (a brave side quest)
+
+One of our teammates is currently exploring the possibility of using **cloud-based LLM APIs** 👀
+
+However:
+
+* We have **very limited experience with API-based models**
+* Also… budget constraints exist (instant noodles are already expensive enough)
+
+Due to time limitations, we were **unable to integrate the cloud-based version into this repository**.
+So for now, this project focuses entirely on **local model execution (Ollama)**.
+
+---
+
+## ⚖️ A Note to the Judges (with honesty and a bit of guilt)
+
+This project builds upon a previous assignment of ours.
+
+We did ask whether this was allowed, and the answer was *yes* —
+but we still feel slightly morally conflicted about it 😅
+
+So we’d like to acknowledge that:
+
+> This may give us a small structural advantage compared to teams starting fully from scratch.
+
+We kindly ask you to **take this into consideration during evaluation**,
+as fairness matters more to us than squeezing out a few extra points 🙏
+
+---
+
+## 🎯 Final Thoughts
+
+This project is:
+
+* A mix of practicality and experimentation
+* Slightly duct-taped in places
+* Surprisingly functional
+
+And most importantly:
+
+> Built with curiosity, caffeine, and just enough chaos to make it fun ☕💻
+
+---
+
+Thanks for checking it out ❤️
+ 
+ 
+ 
+ 
  # 🚀 How to Run LazyBomb Locally
 
 ## 📦 One-Time Setup
