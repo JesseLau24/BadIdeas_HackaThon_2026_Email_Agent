@@ -63,7 +63,7 @@ Main package containing the core logic.
 
 ## ⚙️ How It Works
 
-1. User runs the CLI
+1. User runs the CLI (on VS Code just run "cli_agent.py" file under root dir, or if you prefer to see a Terminal, then I guess you know what to do)
 2. Agent fetches recent emails
 3. LLM extracts tasks from email content
 4. Tasks are deduplicated and saved
