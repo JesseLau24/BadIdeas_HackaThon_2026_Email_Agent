@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LazyBomb Task List (Static Snapshot)</title>
+    <style>
+        body {
+            font-family: "Segoe UI Emoji", sans-serif;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+        .date-group {
+            margin-bottom: 30px;
+        }
+        .status-row {
+            display: flex;
+            gap: 20px;
+        }
+        .status-column {
+            flex: 1;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 4px rgba(0,0,0,0.1);
+        }
+        h2, h3 {
+            margin-top: 0;
+        }
+        li {
+            margin-bottom: 1em;
+            padding-left: 10px;
+            border-left: 4px solid #ccc;
+            border-radius: 5px;
+        }
+        .status-todo { background-color: #f8f9fa; }
+        .status-imonit { background-color: #fff3cd; }
+        .status-finished { background-color: #d4edda; text-decoration: line-through; }
+        .status-deleted { background-color: #f8d7da; }
+        .email-content {
+            white-space: pre-wrap;
+            background-color: #f2f2f2;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 5px;
+            display: none;
+        }
+        .task-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .show-email-btn {
+            background: #ddd;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            padding: 2px 6px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function toggleEmailContent(button) {
+            const content = button.parentElement.nextElementSibling;
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                button.textContent = '-';
+            } else {
+                content.style.display = 'none';
+                button.textContent = '+';
+            }
+        }
+        function sortByDate() {
+            const items = document.querySelectorAll('li');
+            [...items].sort((a, b) => new Date(a.dataset.due || '9999') - new Date(b.dataset.due || '9999'))
+                .forEach(li => li.parentElement.appendChild(li));
+        }
+        function sortByPriority() {
+            const map = { 'high': 1, 'medium': 2, 'low': 3, "it's complicated": 4, 'normal': 5 };
+            const items = document.querySelectorAll('li');
+            [...items].sort((a, b) => (map[a.dataset.priority] || 6) - (map[b.dataset.priority] || 6))
+                .forEach(li => li.parentElement.appendChild(li));
+        }
+    </script>
+</head>
+<body>
+    <h1>🧨 LazyBomb Task List (Static Snapshot)</h1>
+    <p><strong>📆 Exported on:</strong> 2025-07-29 21:22:55</p>
+    <div style="margin-bottom: 20px;">
+        <button onclick="sortByDate()">📅 Sort by Deadline</button>
+        <button onclick="sortByPriority()">🔥 Sort by Priority</button>
+    </div>
+    
+    
+        <div class="date-group">
+            <h2>2025-07-26</h2>
+            <div class="status-row">
+                
+                <div class="status-column">
+                    <h3>to do</h3>
+                    <ul>
+                    
+                    </ul>
+                </div>
+                
+                <div class="status-column">
+                    <h3>I'm on it</h3>
+                    <ul>
+                    
+                    </ul>
+                </div>
+                
+                <div class="status-column">
+                    <h3>finished</h3>
+                    <ul>
+                    
+                        <li class="status-finished">
+                            data-due="2025-07-26T19:00" 
+                            data-priority="high">
+                            <div class="task-summary">
+                                <strong>Come up with a theme for the new RL YouTube idea discussed</strong>
+                                <button class="show-email-btn" onclick="toggleEmailContent(this)">+</button>
+                            </div>
+                            <div class="email-content">Dear Alex
+
+I hope this email finds you well
+
+Please take a look at the new RL youtube idea that we just talked about and
+come up with a theme.
+Deadline is 24 July 2025 19:00
+
+Best regards
+Jesse Huang
+</div>
+                            📅 <em>Due:</em> 2025-07-26T19:00<br>
+                            🔥 <em>Priority:</em> high<br>
+                            🧑 <em>Assigned by:</em> Jesse Huang<br>
+                            💬 <em>Comments:</em> This task involves brainstorming and deciding on a theme based on recent discussions about the new RL YouTube project.<br>
+                            ✅ <em>Status:</em> finished
+                        </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="status-column">
+                    <h3>deleted</h3>
+                    <ul>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+    
+        <div class="date-group">
+            <h2>2025-07-27</h2>
+            <div class="status-row">
+                
+                <div class="status-column">
+                    <h3>to do</h3>
+                    <ul>
+                    
+                    </ul>
+                </div>
+                
+                <div class="status-column">
+                    <h3>I'm on it</h3>
+                    <ul>
+                    
+                    </ul>
+                </div>
+                
+                <div class="status-column">
+                    <h3>finished</h3>
+                    <ul>
+                    
+                        <li class="status-finished">
+                            data-due="2025-07-27T07:23" 
+                            data-priority="high">
+                            <div class="task-summary">
+                                <strong>Debug the new module on Ollama Aget</strong>
+                                <button class="show-email-btn" onclick="toggleEmailContent(this)">+</button>
+                            </div>
+                            <div class="email-content"></div>
+                            📅 <em>Due:</em> 2025-07-27T07:23<br>
+                            🔥 <em>Priority:</em> high<br>
+                            🧑 <em>Assigned by:</em> Jesse<br>
+                            💬 <em>Comments:</em> This is not the case<br>
+                            ✅ <em>Status:</em> finished
+                        </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="status-column">
+                    <h3>deleted</h3>
+                    <ul>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+    
+        <div class="date-group">
+            <h2>2025-07-28</h2>
+            <div class="status-row">
+                
+                <div class="status-column">
+                    <h3>to do</h3>
+                    <ul>
+                    
+                    </ul>
+                </div>
+                
+                <div class="status-column">
+                    <h3>I'm on it</h3>
+                    <ul>
+                    
+                    </ul>
+                </div>
+                
+                <div class="status-column">
+                    <h3>finished</h3>
+                    <ul>
+                    
+                        <li class="status-finished">
+                            data-due="2025-07-28T22:00" 
+                            data-priority="normal">
+                            <div class="task-summary">
+                                <strong>Finish the video</strong>
+                                <button class="show-email-btn" onclick="toggleEmailContent(this)">+</button>
+                            </div>
+                            <div class="email-content">Dear Alex
+
+I hope this email finds you well
+
+Finish the video by 10:00 PM July 25 2025
+
+Best Regards
+Jesse
+</div>
+                            📅 <em>Due:</em> 2025-07-28T22:00<br>
+                            🔥 <em>Priority:</em> normal<br>
+                            🧑 <em>Assigned by:</em> Jesse<br>
+                            💬 <em>Comments:</em> The task is to complete a video project.<br>
+                            ✅ <em>Status:</em> finished
+                        </li>
+                    
+                        <li class="status-finished">
+                            data-due="2025-07-28T19:00" 
+                            data-priority="high">
+                            <div class="task-summary">
+                                <strong>Fix the issue with the daily tasks and daily happiness goal updating JSON file due to bad formatting.</strong>
+                                <button class="show-email-btn" onclick="toggleEmailContent(this)">+</button>
+                            </div>
+                            <div class="email-content">Dear Alex
+
+I hope this email finds you well
+
+I recently noticed that there seems to be an issue with the daily tasks and
+daily happiness goal updating json file issue with bad formatting.
+
+Solve this issue. Deadline is 28th July 2025 19:00
+
+Best regards
+Jesse Huang
+</div>
+                            📅 <em>Due:</em> 2025-07-28T19:00<br>
+                            🔥 <em>Priority:</em> high<br>
+                            🧑 <em>Assigned by:</em> Jesse Huang<br>
+                            💬 <em>Comments:</em> The issue was identified by Jesse Huang and needs resolution before the specified deadline.<br>
+                            ✅ <em>Status:</em> finished
+                        </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="status-column">
+                    <h3>deleted</h3>
+                    <ul>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+    
+        <div class="date-group">
+            <h2>2025-07-29</h2>
+            <div class="status-row">
+                
+                <div class="status-column">
+                    <h3>to do</h3>
+                    <ul>
+                    
+                    </ul>
+                </div>
+                
+                <div class="status-column">
+                    <h3>I'm on it</h3>
+                    <ul>
+                    
+                    </ul>
+                </div>
+                
+                <div class="status-column">
+                    <h3>finished</h3>
+                    <ul>
+                    
+                        <li class="status-finished">
+                            data-due="2025-07-29T20:00" 
+                            data-priority="normal">
+                            <div class="task-summary">
+                                <strong>Generate 2 ideas for the new RL channel</strong>
+                                <button class="show-email-btn" onclick="toggleEmailContent(this)">+</button>
+                            </div>
+                            <div class="email-content">Dear Alex
+
+I hope this email finds you well
+
+Please generate 2 ideas for the new RL channel by 19:00 July 24th 2025
+
+Best Regards
+Jesse Huang
+</div>
+                            📅 <em>Due:</em> 2025-07-29T20:00<br>
+                            🔥 <em>Priority:</em> normal<br>
+                            🧑 <em>Assigned by:</em> Jesse Huang<br>
+                            💬 <em>Comments:</em> The task is to come up with two innovative ideas specifically for the new RL (Reinforcement Learning) channel by the given deadline.<br>
+                            ✅ <em>Status:</em> finished
+                        </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="status-column">
+                    <h3>deleted</h3>
+                    <ul>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+    
+        <div class="date-group">
+            <h2>2025-07-30</h2>
+            <div class="status-row">
+                
+                <div class="status-column">
+                    <h3>to do</h3>
+                    <ul>
+                    
+                    </ul>
+                </div>
+                
+                <div class="status-column">
+                    <h3>I'm on it</h3>
+                    <ul>
+                    
+                    </ul>
+                </div>
+                
+                <div class="status-column">
+                    <h3>finished</h3>
+                    <ul>
+                    
+                        <li class="status-finished">
+                            data-due="2025-07-30T15:45" 
+                            data-priority="high">
+                            <div class="task-summary">
+                                <strong>Test if the static HTML Snapshot is good enough!</strong>
+                                <button class="show-email-btn" onclick="toggleEmailContent(this)">+</button>
+                            </div>
+                            <div class="email-content"></div>
+                            📅 <em>Due:</em> 2025-07-30T15:45<br>
+                            🔥 <em>Priority:</em> high<br>
+                            🧑 <em>Assigned by:</em> Jesse<br>
+                            💬 <em>Comments:</em> This is just a test<br>
+                            ✅ <em>Status:</em> finished
+                        </li>
+                    
+                    </ul>
+                </div>
+                
+                <div class="status-column">
+                    <h3>deleted</h3>
+                    <ul>
+                    
+                    </ul>
+                </div>
+                
+            </div>
+        </div>
+    
+</body>
+</html>

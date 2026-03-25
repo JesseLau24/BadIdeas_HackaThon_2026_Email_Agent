@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>📔 LazyBomb Daily Diary</title>
+    <style>
+        body {
+            font-family: "Segoe UI Emoji", sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 30px;
+        }
+        .day-card {
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        .diary-row {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .health-box, .happiness-box {
+            flex: 1 1 300px;
+        }
+        .health-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .health-box li.done {
+            color: green;
+            font-weight: bold;
+        }
+        .health-box li.not-done {
+            color: #aaa;
+            text-decoration: line-through;
+        }
+        .happiness-box img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .date-title {
+            margin-top: 0;
+            color: #444;
+        }
+        .back-link {
+            margin-bottom: 20px;
+            display: inline-block;
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-link">🏠 Back to Task List</a>
+    <h1>📔 LazyBomb Daily Diary</h1>
+
+    {% for date, log in logs|dictsort %}
+        {% set hg = log.health_goals if log.health_goals is defined else [] %}
+        {% set ht = log.happiness_task if log.happiness_task is defined else {} %}
+        <div class="day-card">
+            <h2 class="date-title">{{ date }}</h2>
+            <div class="diary-row">
+                <!-- Health Goals -->
+                <div class="health-box">
+                    <h3>🍀 Health Goals</h3>
+                    <ul>
+                        {% for goal in hg %}
+                        <li class="{{ 'done' if goal.done else 'not-done' }}">
+                            {{ '☑' if goal.done else '☐' }} {{ goal.goal }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Happiness Task -->
+                <div class="happiness-box">
+                    <h3>📸 Happiness Task</h3>
+                    <p><strong>Task:</strong> {{ ht.custom_text or ht.task or 'No task' }}</p>
+                    {% if ht.image_path %}
+                        <img src="{{ url_for('static', filename=ht.image_path.split('static/')[-1]) }}" alt="Uploaded image">
+                    {% endif %}
+                    <p><strong>Reflection:</strong><br>{{ ht.reflection or 'No reflection written.' }}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</body>
+</html>

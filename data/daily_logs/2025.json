@@ -1,0 +1,392 @@
+{
+  "2025-07-10": {
+    "health_goals": [
+      {
+        "goal": "Take a 20-minute nap",
+        "done": true
+      },
+      {
+        "goal": "Drink 5 cups of water",
+        "done": true
+      },
+      {
+        "goal": "Do 30 minutes of cardio",
+        "done": true
+      },
+      {
+        "goal": "Eat at least one fruit",
+        "done": true
+      },
+      {
+        "goal": "Sleep before midnight",
+        "done": true
+      }
+    ],
+    "happiness_task": {
+      "task": "Take a picture of a bird",
+      "custom_text": "",
+      "image_path": "/static/images/2025-07-10_235743.jpg",
+      "reflection": "I have a wallpaper of a dog"
+    }
+  },
+  "2025-07-11": {
+    "happiness_task": {
+      "task": "Call an old friend",
+      "custom_text": "",
+      "image_path": "/static/images/2025-07-11_000926.png",
+      "reflection": "I don't have any friends. So I am not going to call anyone.\r\n\r\nBut I do have some awesome wallpapers. Here is one!"
+    },
+    "health_goals": [
+      {
+        "goal": "Take a 20-minute nap",
+        "done": true
+      },
+      {
+        "goal": "Drink 5 cups of water",
+        "done": true
+      },
+      {
+        "goal": "Do 30 minutes of cardio",
+        "done": true
+      },
+      {
+        "goal": "Eat at least one fruit",
+        "done": true
+      },
+      {
+        "goal": "Sleep before midnight",
+        "done": true
+      }
+    ]
+  },
+  "2025-07-12": {
+    "health_goals": [
+      {
+        "goal": "Take a 20-minute nap",
+        "done": true
+      },
+      {
+        "goal": "Drink 5 cups of water",
+        "done": true
+      },
+      {
+        "goal": "Do 30 minutes of cardio",
+        "done": true
+      },
+      {
+        "goal": "Eat at least one fruit",
+        "done": true
+      },
+      {
+        "goal": "Sleep before midnight",
+        "done": false
+      }
+    ],
+    "happiness_task": {
+      "task": "Draw something on paper",
+      "custom_text": "",
+      "image_path": "/static/images/2025-07-12_145244.jpg",
+      "reflection": "I guess I need to add more happiness task of the day. Here is another wallpaper"
+    }
+  },
+  "2025-07-13": {
+    "health_goals": [
+      {
+        "goal": "Take a 20-minute nap",
+        "done": true
+      },
+      {
+        "goal": "Drink 5 cups of water",
+        "done": true
+      },
+      {
+        "goal": "Do 30 minutes of cardio",
+        "done": true
+      },
+      {
+        "goal": "Eat at least one fruit",
+        "done": true
+      },
+      {
+        "goal": "Sleep before midnight",
+        "done": true
+      }
+    ],
+    "happiness_task": {
+      "task": "Take a picture of a bird",
+      "custom_text": "",
+      "image_path": "/static/images/2025-07-13_150240.jpg",
+      "reflection": "I don't want to... But here is a wall paper"
+    }
+  },
+  "2025-07-14": {
+    "health_goals": [
+      {
+        "goal": "Take a 20-minute nap",
+        "done": true
+      },
+      {
+        "goal": "Drink 5 cups of water",
+        "done": true
+      },
+      {
+        "goal": "Do 30 minutes of cardio",
+        "done": true
+      },
+      {
+        "goal": "Eat at least one fruit",
+        "done": false
+      },
+      {
+        "goal": "Sleep before midnight",
+        "done": false
+      }
+    ],
+    "happiness_task": {
+      "task": "Call an old friend",
+      "custom_text": "",
+      "image_path": "/static/images/2025-07-14_205755.jpg",
+      "reflection": "Testing if this would be synced to JSON"
+    }
+  },
+  "2025-07-15": {
+    "health_goals": [
+      {
+        "goal": "Take a 20-minute nap",
+        "done": true
+      },
+      {
+        "goal": "Drink 5 cups of water",
+        "done": true
+      },
+      {
+        "goal": "Do 30 minutes of cardio",
+        "done": true
+      },
+      {
+        "goal": "Eat at least one fruit",
+        "done": true
+      },
+      {
+        "goal": "Sleep before midnight",
+        "done": false
+      }
+    ],
+    "happiness_task": {
+      "task": "Watch the clouds for 10 minutes",
+      "custom_text": "",
+      "image_path": "/static/images/2025-07-15_150812.jpg",
+      "reflection": "I have watched the clouds for 10 minutes and i am having fun!"
+    }
+  },
+  "2025-07-16": {
+    "happiness_task": {
+      "task": "Call an old friend",
+      "custom_text": "",
+      "image_path": "/static/images/2025-07-16_160810.png",
+      "reflection": "this is just a test"
+    },
+    "health_goals": [
+      {
+        "goal": "Take a 20-minute nap",
+        "done": true
+      },
+      {
+        "goal": "Drink 5 cups of water",
+        "done": true
+      },
+      {
+        "goal": "Do 30 minutes of cardio",
+        "done": true
+      },
+      {
+        "goal": "Eat at least one fruit",
+        "done": true
+      },
+      {
+        "goal": "Sleep before midnight",
+        "done": true
+      }
+    ]
+  },
+  "2025-07-17": {
+    "health_goals": [
+      {
+        "goal": "Take a 20-minute nap",
+        "done": true
+      },
+      {
+        "goal": "Drink 5 cups of water",
+        "done": true
+      },
+      {
+        "goal": "Do 30 minutes of cardio",
+        "done": true
+      },
+      {
+        "goal": "Eat at least one fruit",
+        "done": true
+      },
+      {
+        "goal": "Sleep before midnight",
+        "done": false
+      }
+    ],
+    "happiness_task": {
+      "task": "Call an old friend",
+      "custom_text": "",
+      "image_path": "/static/images/2025-07-17_163122.png",
+      "reflection": "I guess it works now, here is a picture of my new Seiko Mod with a really good dial. Time is my friend."
+    }
+  },
+  "2025-07-25": {
+    "health_goals": [
+      {
+        "goal": "Take a 20-minute nap",
+        "done": true
+      },
+      {
+        "goal": "Drink 5 cups of water",
+        "done": true
+      },
+      {
+        "goal": "Do 30 minutes of cardio",
+        "done": true
+      },
+      {
+        "goal": "Eat at least one fruit",
+        "done": true
+      },
+      {
+        "goal": "Sleep before midnight",
+        "done": false
+      }
+    ],
+    "happiness_task": {
+      "task": "Write a thank-you message",
+      "custom_text": "",
+      "image_path": "/static/images/2025-07-25_171428.png",
+      "reflection": "Thank you very much!"
+    }
+  },
+  "2025-07-29": {
+    "health_goals": [
+      {
+        "goal": "Take a 20-minute nap",
+        "done": true
+      },
+      {
+        "goal": "Drink 5 cups of water",
+        "done": true
+      },
+      {
+        "goal": "Do 30 minutes of cardio",
+        "done": true
+      },
+      {
+        "goal": "Eat at least one fruit",
+        "done": true
+      },
+      {
+        "goal": "Sleep before midnight",
+        "done": true
+      }
+    ],
+    "happiness_task": {
+      "task": "Write a thank-you message",
+      "custom_text": "This is a customized task: testing if it is good",
+      "image_path": "/static/images/2025-07-29_212204.jpg",
+      "reflection": "Testing if customized task is allowed"
+    }
+  },
+  "2025-07-30": {
+    "health_goals": [
+      {
+        "goal": "Take a 20-minute nap",
+        "done": true
+      },
+      {
+        "goal": "Drink 5 cups of water",
+        "done": true
+      },
+      {
+        "goal": "Do 30 minutes of cardio",
+        "done": true
+      },
+      {
+        "goal": "Eat at least one fruit",
+        "done": true
+      },
+      {
+        "goal": "Sleep before midnight",
+        "done": false
+      }
+    ],
+    "happiness_task": {
+      "task": "Wear mismatched socks for fun",
+      "custom_text": "Testing if the customized daily happiness task is working",
+      "image_path": "/static/images/2025-07-30_091254.png",
+      "reflection": "I have enriched the daily happiness task pool to 50 so that each random draw would be meaningful instead of just a pool of 5. And later I am thinking about adding another function that can add customized daily happiness task to the pool, or at least give the users the option to modify the json file to add something interesting."
+    }
+  },
+  "2025-08-01": {
+    "health_goals": [
+      {
+        "goal": "Take a 20-minute nap",
+        "done": false
+      },
+      {
+        "goal": "Drink 5 cups of water",
+        "done": false
+      },
+      {
+        "goal": "Do 30 minutes of cardio",
+        "done": false
+      },
+      {
+        "goal": "Eat at least one fruit",
+        "done": false
+      },
+      {
+        "goal": "Sleep before midnight",
+        "done": false
+      }
+    ],
+    "happiness_task": {
+      "task": "Give yourself a mini foot massage",
+      "custom_text": "",
+      "image_path": "",
+      "reflection": ""
+    }
+  },
+  "2025-08-13": {
+    "health_goals": [
+      {
+        "goal": "Take a 20-minute nap",
+        "done": true
+      },
+      {
+        "goal": "Drink 5 cups of water",
+        "done": true
+      },
+      {
+        "goal": "Do 30 minutes of cardio",
+        "done": true
+      },
+      {
+        "goal": "Eat at least one fruit",
+        "done": true
+      },
+      {
+        "goal": "Sleep before midnight",
+        "done": false
+      }
+    ],
+    "happiness_task": {
+      "task": "Sit silently and notice 5 different sounds",
+      "custom_text": "",
+      "image_path": "",
+      "reflection": ""
+    }
+  }
+}

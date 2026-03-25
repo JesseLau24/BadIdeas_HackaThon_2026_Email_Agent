@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LazyBomb Task List</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .status-column {
+            flex: 1;
+            padding: 10px;
+            background-color: #fefefe;
+            border-radius: 10px;
+            box-shadow: 0 0 4px rgba(0,0,0,0.1);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 100%;
+        }
+        .no-deadline-warning {
+            color: orange;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .email-content {
+            display: none;
+            white-space: pre-wrap;
+            background-color: #f2f2f2;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    {% macro status_class(status) %}
+        {% set s = status|lower %}
+        {% if s == 'to do' %}
+            status-todo
+        {% elif s == "i'm on it" or s == 'imonit' %}
+            status-imonit
+        {% elif s == 'finished' %}
+            status-finished
+        {% elif s == 'deleted' %}
+            status-deleted
+        {% else %}
+            status-todo
+        {% endif %}
+    {% endmacro %}
+
+    {% set statuses = ['to do', "I'm on it", 'finished', 'deleted'] %}
+
+    <h1>🧨 LazyBomb Task List</h1>
+
+    <!-- 💚 健康 & 快乐每日气泡区域 -->
+    <div id="daily-bubbles" style="display: flex; gap: 30px; margin-bottom: 30px;">
+        <!-- 🩺 健康气泡 -->
+        <div id="health-bubble" style="flex: 1; padding: 15px; border-radius: 15px; background: #e7f9ee; box-shadow: 0 0 4px rgba(0,0,0,0.1);">
+            <h2>🏥 Daily Health Goals</h2>
+            <form id="health-goals-form">
+                <!-- JS 动态填充 -->
+            </form>
+        </div>
+
+        <!-- 🌞 快乐气泡 -->
+        <div id="happiness-bubble" style="flex: 1; padding: 15px; border-radius: 15px; background: #fff4d6; box-shadow: 0 0 4px rgba(0,0,0,0.1);">
+            <h2>🎲 Happiness Task of the Day 
+                <button onclick="refreshHappinessTask()" style="margin-left: 10px;">🎲</button>
+            </h2>
+            <input type="text" id="happiness-task-input" style="width: 100%;" />
+            <textarea id="happiness-reflection" rows="4" placeholder="Write your reflection here..." style="width: 100%; margin-top: 10px;"></textarea>
+            <div style="margin-top: 10px;">
+                <label for="happiness-photo">📷 Upload a photo:</label>
+                <input type="file" id="happiness-photo" accept="image/*" />
+            </div>
+            <button onclick="submitHappinessEntry()" style="margin-top: 10px;">💾 Save</button>
+        </div>
+    </div>
+
+
+    <form action="/export_html" method="post">
+        <button type="submit">📄 Export Static HTML Snapshot</button>
+    </form>
+
+    <div style="margin-top: 10px;">
+        <form action="/daily_diary" method="get" style="display: inline;">
+            <button type="submit">📔 Go to Daily Diary</button>
+        </form>
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <button onclick="sortByDate()">📅 Sort by Deadline</button>
+        <button onclick="sortByPriority()">🔥 Sort by Priority</button>
+        <button onclick="document.getElementById('addTaskModal').style.display='flex'">➕ Add New Task</button>
+    </div>
+
+    <div class="date-group-container">
+        {% set tasks_by_date = {} %}
+        {% for task in tasks %}
+            {% set date_key = task.due_date[:10] if task.due_date else 'No Deadline' %}
+            {% if date_key not in tasks_by_date %}
+                {% set _ = tasks_by_date.update({date_key: []}) %}
+            {% endif %}
+            {% set _ = tasks_by_date[date_key].append(task) %}
+        {% endfor %}
+
+        {% for date_str, group_tasks in tasks_by_date|dictsort %}
+        <div class="date-group">
+            <h2>{{ date_str }}</h2>
+            <div class="status-row">
+                {% for col in statuses %}
+                <div class="status-column">
+                    <h3>{{ col|capitalize }}</h3>
+                    <ul>
+                        {% for task in group_tasks if task.status|lower == col|lower %}
+                        <li class="{{ status_class(task.status) }}"
+                            data-due="{{ task.due_date or '9999-12-31T23:59' }}"
+                            data-priority="{{ task.priority or 'normal' }}">
+                            <div class="task-summary">
+                                <strong>{{ task.task or 'Untitled Task' | e }}</strong>
+                                <button class="show-email-btn" onclick="toggleEmailContent(event, this)">+</button>
+                            </div>
+                            <div class="email-content">{{ task.email_content or '' }}</div>
+                            📅 <em>Due:</em> {{ task.due_date or 'No deadline' | e }}
+                            {% if not task.due_date %}<span class="no-deadline-warning">⚠️</span>{% endif %}
+                            <br>
+                            🔥 <em>Priority:</em> {{ task.priority|capitalize if task.priority else 'Normal' }} <br>
+                            🧑 <em>Assigned by:</em> {{ task.assigner or 'Unassigned' | e }}<br>
+                            💬 <em>Comments:</em> {{ task.comments or 'None' | e }}<br>
+                            <label>Status:
+                                <select 
+                                    data-task="{{ task.id | e }}" 
+                                    data-prev="{{ task.status }}"
+                                    onchange="updateStatus(this)">
+                                    <option value="to do" {% if task.status == 'to do' %}selected{% endif %}>to do</option>
+                                    <option value="I'm on it" {% if task.status == "I'm on it" %}selected{% endif %}>I'm on it</option>
+                                    <option value="finished" {% if task.status == 'finished' %}selected{% endif %}>finished</option>
+                                </select>
+                            </label>
+                            <button onclick='openEditModal({{ task | tojson | safe }})'>✏️ Edit</button>
+                            {% if task.status == 'deleted' %}
+                            <button onclick="restoreTask('{{ task.id }}')">♻️ Restore</button>
+                            <button onclick="deleteForever('{{ task.id }}')">🧨 Delete Forever</button>
+                            {% else %}
+                            <button onclick="deleteTask('{{ task.id }}')">🗑️ Delete</button>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <h3>Edit Task</h3>
+            <input type="hidden" id="edit-task-id">
+            <label>Task: <input id="edit-task-name"></label><br><br>
+            <label>Due Date: <input type="datetime-local" id="edit-due-date"></label><br><br>
+            <label>Priority:
+                <select id="edit-priority">
+                    <option value="">(unset)</option>
+                    <option value="high">high</option>
+                    <option value="medium">medium</option>
+                    <option value="low">low</option>
+                    <option value="it's complicated">it's complicated</option>
+                </select>
+            </label><br><br>
+            <label>Assigner: <input id="edit-assigner"></label><br><br>
+            <label>Comments:<br>
+                <textarea id="edit-comments" rows="3" style="width: 100%;"></textarea>
+            </label><br>
+            <button onclick="submitEditForm()">💾 Save</button>
+            <button onclick="document.getElementById('editModal').style.display='none'">❌ Cancel</button>
+        </div>
+    </div>
+
+    <div class="modal" id="addTaskModal">
+        <div class="modal-content">
+            <h3>Add New Task</h3>
+            <label>Task: <input id="new-task-name"></label><br><br>
+            <label>Due Date: <input type="datetime-local" id="new-due-date"></label><br><br>
+            <label>Priority:
+                <select id="new-priority">
+                    <option value="">(unset)</option>
+                    <option value="high">high</option>
+                    <option value="medium">medium</option>
+                    <option value="low">low</option>
+                    <option value="it's complicated">it's complicated</option>
+                </select>
+            </label><br><br>
+            <label>Assigner: <input id="new-assigner"></label><br><br>
+            <label>Comments:<br>
+                <textarea id="new-comments" rows="3" style="width: 100%;"></textarea>
+            </label><br>
+            <button onclick="submitNewTask()">📥 Add Task</button>
+            <button onclick="document.getElementById('addTaskModal').style.display='none'">❌ Cancel</button>
+        </div>
+    </div>
+
+
+    <script>
+        function toggleEmailContent(event, button) {
+            event.preventDefault();
+            const content = button.parentElement.nextElementSibling;
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                button.textContent = '-';
+            } else {
+                content.style.display = 'none';
+                button.textContent = '+';
+            }
+        }
+
+        async function updateStatus(selectElem) {
+            const taskId = selectElem.getAttribute('data-task');  // ✅ 用 id 而非 task name
+            const newStatus = selectElem.value;
+            try {
+                const res = await fetch('/update_status', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ id: taskId, status: newStatus })  // ✅ 传 id
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    alert('❌ Failed to update task status: ' + data.error);
+                    selectElem.value = selectElem.getAttribute('data-prev');
+                } else {
+                    selectElem.setAttribute('data-prev', newStatus);
+                    updateTaskStyle(selectElem.closest('li'), newStatus);
+                }
+            } catch (err) {
+                alert('⚠️ Error updating task status: ' + err.message);
+                selectElem.value = selectElem.getAttribute('data-prev');
+            }
+        }
+
+
+        function updateTaskStyle(liElem, status) {
+            liElem.classList.remove('status-todo', 'status-imonit', 'status-finished');
+            if (status.toLowerCase() === 'to do') liElem.classList.add('status-todo');
+            else if (status.toLowerCase() === "i'm on it") liElem.classList.add('status-imonit');
+            else if (status.toLowerCase() === 'finished') liElem.classList.add('status-finished');
+        }
+
+        function sortTasks(compareFn) {
+            document.querySelectorAll('.date-group').forEach(dateGroup => {
+                dateGroup.querySelectorAll('.status-column').forEach(statusCol => {
+                    const ul = statusCol.querySelector('ul');
+                    const items = Array.from(ul.children);
+                    items.sort(compareFn);
+                    items.forEach(item => ul.appendChild(item));
+                });
+            });
+        }
+
+        function sortByDate() {
+            sortTasks((a, b) => new Date(a.dataset.due ?? '') - new Date(b.dataset.due ?? ''));
+        }
+
+        function sortByPriority() {
+            const priorityOrder = {
+                'high': 1,
+                'medium': 2,
+                'low': 3,
+                "it's complicated": 4,
+                '': 5,
+                'normal': 5
+            };
+            sortTasks((a, b) => {
+                const priA = priorityOrder[(a.dataset.priority ?? '').toLowerCase()] || 5;
+                const priB = priorityOrder[(b.dataset.priority ?? '').toLowerCase()] || 5;
+                return priA - priB;
+            });
+        }
+
+        fetch('/get_health_status')
+        .then(r => r.json())
+        .then(data => {
+            const form = document.getElementById('health-goals-form');
+            form.innerHTML = '';
+            data.health_goals.forEach((goal, index) => {
+                const id = `goal-${index}`;
+                form.innerHTML += `
+                    <label style="display: block; margin-bottom: 8px;">
+                        <input type="checkbox" id="${id}" ${goal.done ? 'checked' : ''} onchange="updateHealthGoal('${index}', this.checked)" />
+                        ${goal.goal}
+                    </label>`;
+            });
+        });
+
+
+        // ✅ 提交健康目标更新
+        function updateHealthGoal(index, done) {
+            fetch('/update_health_goal', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ goal_index: index, done: done })
+            })
+            .then(r => {
+                if (r.ok) {
+                    console.log('Health goal updated!');
+                } else {
+                    console.error('Failed to update goal');
+                }
+            });
+        }
+
+
+        // ✅ 加载快乐任务
+        function loadHappinessTask() {
+            fetch('/get_happiness_today')
+                .then(r => r.json())
+                .then(data => {
+                    const input = document.getElementById('happiness-task-input');
+                    input.value = data.custom_text || data.task || '';
+                    document.getElementById('happiness-reflection').value = data.reflection || '';
+                });
+        }
+
+        loadHappinessTask();
+
+        function refreshHappinessTask() {
+            fetch('/reroll_happiness_task', {
+                method: 'POST'
+            }).then(() => {
+                // 接下来重新获取任务（最新内容），再刷新 UI
+                return fetch('/get_happiness_today');
+            }).then(res => res.json())
+            .then(data => {
+                const taskField = document.getElementById('happiness-task-input');
+                const customText = data.custom_text || "";
+                const systemTask = data.task || "No task today";
+                taskField.value = customText || systemTask;
+                document.getElementById('happiness-reflection').value = '';  // 清空感想
+            }).catch(err => {
+                console.error("🎲 Failed to reroll happiness task:", err);
+                alert("🚨 Failed to reroll happiness task.");
+            });
+        }
+
+        // ✅ 提交快乐任务记录
+        function submitHappinessEntry() {
+            const task = document.getElementById('happiness-task-input').value.trim();
+            const reflection = document.getElementById('happiness-reflection').value.trim();
+            const photoInput = document.getElementById('happiness-photo');
+            const photoFile = photoInput.files[0];
+
+            if (!reflection && !photoFile) {
+                alert("⚠️ Please write a reflection or upload a photo!");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('task', task);
+            formData.append('reflection', reflection);
+            if (photoFile) formData.append('photo', photoFile);
+
+            fetch('/update_happiness_entry', {
+                method: 'POST',
+                body: formData
+            }).then(res => {
+                if (res.ok) {
+                    alert('✅ Saved!');
+                    // 清空字段
+                    document.getElementById('happiness-reflection').value = '';
+                    photoInput.value = '';
+                } else {
+                    alert('❌ Failed to save entry.');
+                }
+            }).catch(err => {
+                console.error(err);
+                alert('🚨 Error submitting entry.');
+            });
+        }
+
+        async function deleteTask(taskId) {
+            await fetch('/delete_task', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id: taskId})
+            });
+            location.reload();
+        }
+
+
+        async function restoreTask(taskId) {
+            await fetch('/restore_task', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id: taskId})
+            });
+            location.reload();
+        }
+
+        async function deleteForever(taskId) {
+            if (!confirm(`🚨 Permanently delete "${taskId}"? This cannot be undone.`)) return;
+            await fetch('/delete_forever', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id: taskId})
+            });
+            location.reload();
+        }
+
+        function openEditModal(task) {
+            document.getElementById('edit-task-id').value = task.id || '';  // ✅ 新增，确保传 id
+            document.getElementById('edit-task-name').value = task.task || '';
+            document.getElementById('edit-due-date').value = task.due_date || '';
+            document.getElementById('edit-priority').value = task.priority || '';
+            document.getElementById('edit-assigner').value = task.assigner || '';
+            document.getElementById('edit-comments').value = task.comments || '';
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        async function submitEditForm() {
+            const originalTaskId = document.getElementById('edit-task-id').value;
+            const updates = {
+                task: document.getElementById('edit-task-name').value,
+                due_date: document.getElementById('edit-due-date').value,
+                deadline: document.getElementById('edit-due-date').value,  // 兼容后端结构
+                priority: document.getElementById('edit-priority').value,
+                assigner: document.getElementById('edit-assigner').value,
+                comments: document.getElementById('edit-comments').value
+            };
+
+            try {
+                const res = await fetch('/edit_task', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        id: originalTaskId,
+                        updates: updates
+                    })
+                });
+
+                const result = await res.json();
+                if (!res.ok) {
+                    alert("❌ Failed to save: " + result.error);
+                } else {
+                    alert("✅ Task updated!");
+                    location.reload();
+                }
+
+            } catch (err) {
+                alert("🚨 Error submitting edit: " + err.message);
+                console.error(err);
+            }
+        }
+
+        async function submitNewTask() {
+            const newTask = {
+                task: document.getElementById('new-task-name').value,
+                due_date: document.getElementById('new-due-date').value,
+                priority: document.getElementById('new-priority').value,
+                assigner: document.getElementById('new-assigner').value,
+                comments: document.getElementById('new-comments').value
+            };
+
+            // ✅ 在这里加上唯一 ID
+            newTask.id = crypto.randomUUID();
+
+            await fetch('/add_task', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(newTask)
+            });
+
+            location.reload();
+        }
+
+        document.getElementById('happiness-task-input').addEventListener('change', function () {
+            const editedText = this.value.trim();
+            fetch('/edit_happiness_task', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ task: editedText })  // ✅ 这行必须是 task
+            }).then(res => {
+                if (!res.ok) {
+                    console.error('❌ Failed to update custom task.');
+                }
+            }).catch(err => {
+                console.error('🚨 Error updating custom task:', err);
+            });
+        });
+
+
+    </script>
+</body>
+</html>

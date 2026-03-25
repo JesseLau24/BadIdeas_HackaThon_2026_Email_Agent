@@ -1,0 +1,26 @@
+[
+  {
+    "task": "Refine the new spaCy Pipeline for Latvian, focusing on the ReadMe.md files to make installation instructions clear.",
+    "due_date": "2026-03-22T19:00",
+    "priority": "",
+    "assigner": "Jesse Huang",
+    "comments": "Ensure all users can easily install the model by providing detailed and understandable instructions in the README.",
+    "status": "to do",
+    "deadline": "2026-03-22T19:00",
+    "email_content": "Dear Alex\r\n\r\nI hope this email finds you well.\r\n\r\nPlease refine the new spaCy Pipeline for Latvian, especially the ReadMe.md\r\nfiles. Please make it clear how to install the model so that all users\r\nwould be happy\r\n\r\nDeadline is Sept 17th 2025 19:00\r\n\r\nBest regards\r\nJesse Huang\r\n",
+    "id": "d6ee2256-91f3-4b9b-a5a9-ff32b7c7c786",
+    "source": "manual"
+  },
+  {
+    "task": "Work on cleaning and organizing the latest customer dataset to remove duplicates and standardize formatting",
+    "due_date": "2026-03-30T00:00",
+    "priority": "medium",
+    "assigner": "",
+    "comments": "Let me know if you encounter any issues.",
+    "status": "to do",
+    "deadline": "2026-03-30T00:00",
+    "email_content": "Please work on cleaning and organizing the latest customer dataset. The\r\ngoal is to remove duplicates and standardize formatting.\r\n\r\n*Deadline:* March 30 2026\r\n*Priority:* Medium\r\n\r\nLet me know if you encounter any issues.\r\n\r\nBest,\r\n",
+    "id": "e5a7b9f3-0db8-4d1c-89fc-0bfddcc0f2df",
+    "source": "email"
+  }
+]

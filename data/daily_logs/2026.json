@@ -1,0 +1,32 @@
+{
+  "2026-03-25": {
+    "health_goals": [
+      {
+        "goal": "Take a 20-minute nap",
+        "done": false
+      },
+      {
+        "goal": "Drink 5 cups of water",
+        "done": false
+      },
+      {
+        "goal": "Do 30 minutes of cardio",
+        "done": false
+      },
+      {
+        "goal": "Eat at least one fruit",
+        "done": false
+      },
+      {
+        "goal": "Sleep before midnight",
+        "done": false
+      }
+    ],
+    "happiness_task": {
+      "task": "Pick a color and spot 5 things in that color today",
+      "custom_text": "",
+      "image_path": "",
+      "reflection": ""
+    }
+  }
+}

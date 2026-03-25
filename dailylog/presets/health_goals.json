@@ -1,0 +1,7 @@
+[
+    { "goal": "Take a 20-minute nap", "key": "nap_20min" },
+    { "goal": "Drink 5 cups of water", "key": "water_5cups" },
+    { "goal": "Do 30 minutes of cardio", "key": "cardio_30min" },
+    { "goal": "Eat at least one fruit", "key": "eat_fruit" },
+    { "goal": "Sleep before midnight", "key": "sleep_early" }
+]

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LazyBomb Task List (Static Snapshot)</title>
+    <style>
+        body {
+            font-family: "Segoe UI Emoji", sans-serif;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+        .date-group {
+            margin-bottom: 30px;
+        }
+        .status-row {
+            display: flex;
+            gap: 20px;
+        }
+        .status-column {
+            flex: 1;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 4px rgba(0,0,0,0.1);
+        }
+        h2, h3 {
+            margin-top: 0;
+        }
+        li {
+            margin-bottom: 1em;
+            padding-left: 10px;
+            border-left: 4px solid #ccc;
+            border-radius: 5px;
+        }
+        .status-todo { background-color: #f8f9fa; }
+        .status-imonit { background-color: #fff3cd; }
+        .status-finished { background-color: #d4edda; text-decoration: line-through; }
+        .status-deleted { background-color: #f8d7da; }
+        .email-content {
+            white-space: pre-wrap;
+            background-color: #f2f2f2;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 5px;
+            display: none;
+        }
+        .task-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .show-email-btn {
+            background: #ddd;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            padding: 2px 6px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function toggleEmailContent(button) {
+            const content = button.parentElement.nextElementSibling;
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                button.textContent = '-';
+            } else {
+                content.style.display = 'none';
+                button.textContent = '+';
+            }
+        }
+        function sortByDate() {
+            const items = document.querySelectorAll('li');
+            [...items].sort((a, b) => new Date(a.dataset.due || '9999') - new Date(b.dataset.due || '9999'))
+                .forEach(li => li.parentElement.appendChild(li));
+        }
+        function sortByPriority() {
+            const map = { 'high': 1, 'medium': 2, 'low': 3, "it's complicated": 4, 'normal': 5 };
+            const items = document.querySelectorAll('li');
+            [...items].sort((a, b) => (map[a.dataset.priority] || 6) - (map[b.dataset.priority] || 6))
+                .forEach(li => li.parentElement.appendChild(li));
+        }
+    </script>
+</head>
+<body>
+    <h1>🧨 LazyBomb Task List (Static Snapshot)</h1>
+    <p><strong>📆 Exported on:</strong> {{ export_time }}</p>
+    <div style="margin-bottom: 20px;">
+        <button onclick="sortByDate()">📅 Sort by Deadline</button>
+        <button onclick="sortByPriority()">🔥 Sort by Priority</button>
+    </div>
+    {% set statuses = ['to do', "I'm on it", 'finished', 'deleted'] %}
+    {% for date_str, tasks in tasks_by_date|dictsort %}
+        <div class="date-group">
+            <h2>{{ date_str }}</h2>
+            <div class="status-row">
+                {% for col in statuses %}
+                <div class="status-column">
+                    <h3>{{ col }}</h3>
+                    <ul>
+                    {% for task in tasks if task.status|lower == col|lower %}
+                        <li class="status-{{ (task.status or 'to do') | lower | replace(' ', '') | replace("'", '') }}">
+                            data-due="{{ task.due_date or '9999-12-31T23:59' }}" 
+                            data-priority="{{ task.priority or 'normal' }}">
+                            <div class="task-summary">
+                                <strong>{{ task.task or 'Untitled Task' }}</strong>
+                                <button class="show-email-btn" onclick="toggleEmailContent(this)">+</button>
+                            </div>
+                            <div class="email-content">{{ task.email_content or '' }}</div>
+                            📅 <em>Due:</em> {{ task.due_date or 'No deadline' }}<br>
+                            🔥 <em>Priority:</em> {{ task.priority or 'normal' }}<br>
+                            🧑 <em>Assigned by:</em> {{ task.assigner or 'Unassigned' }}<br>
+                            💬 <em>Comments:</em> {{ task.comments or 'None' }}<br>
+                            ✅ <em>Status:</em> {{ task.status or 'to do' }}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+</body>
+</html>
